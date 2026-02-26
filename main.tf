@@ -9,7 +9,7 @@ terraform {
     bucket = "demodemo09"
     key    = "terraform.tfstate"
     region = "us-east-1"
-    # dynamodb_table = "dynamodb-state-locking"
+    dynamodb_table = "dynamodb-state-locking"
   }
 }
 resource "aws_vpc" "default" {
