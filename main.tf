@@ -28,6 +28,18 @@ resource "aws_internet_gateway" "default" {
   }
 }
 
+resource "aws_db_subnet_group" "default" {
+  name       = "main"
+  subnet_ids = [
+    aws_subnet.subnet1-public.id,
+    aws_subnet.subnet2-public.id,
+    aws_subnet.subnet3-public.id,
+  ]
+  tags = {
+    Name = "My DB subnet group"
+  }
+}
+
 resource "aws_subnet" "subnet1-public" {
   vpc_id            = aws_vpc.default.id
   cidr_block        = var.public_subnet1_cidr
@@ -38,26 +50,26 @@ resource "aws_subnet" "subnet1-public" {
   }
 }
 
-# resource "aws_subnet" "subnet2-public" {
-#   vpc_id            = aws_vpc.default.id
-#   cidr_block        = var.public_subnet2_cidr
-#   availability_zone = "us-east-1b"
+resource "aws_subnet" "subnet2-public" {
+  vpc_id            = aws_vpc.default.id
+  cidr_block        = var.public_subnet2_cidr
+  availability_zone = "us-east-1b"
 
-#   tags = {
-#     Name = "${var.public_subnet2_name}"
-#   }
-# }
+  tags = {
+    Name = "${var.public_subnet2_name}"
+  }
+}
 
-# resource "aws_subnet" "subnet3-public" {
-#   vpc_id            = aws_vpc.default.id
-#   cidr_block        = var.public_subnet3_cidr
-#   availability_zone = "us-east-1c"
+resource "aws_subnet" "subnet3-public" {
+  vpc_id            = aws_vpc.default.id
+  cidr_block        = var.public_subnet3_cidr
+  availability_zone = "us-east-1c"
 
-#   tags = {
-#     Name = "${var.public_subnet3_name}"
-#   }
+  tags = {
+    Name = "${var.public_subnet3_name}"
+  }
 
-# }
+}
 
 
 resource "aws_route_table" "terraform-public" {
@@ -75,6 +87,15 @@ resource "aws_route_table" "terraform-public" {
 
 resource "aws_route_table_association" "terraform-public" {
   subnet_id      = aws_subnet.subnet1-public.id
+  route_table_id = aws_route_table.terraform-public.id
+}
+resource "aws_route_table_association" "terraform-public-2" {
+  subnet_id      = aws_subnet.subnet2-public.id
+  route_table_id = aws_route_table.terraform-public.id
+}
+
+resource "aws_route_table_association" "terraform-public-3" {
+  subnet_id      = aws_subnet.subnet3-public.id
   route_table_id = aws_route_table.terraform-public.id
 }
 
